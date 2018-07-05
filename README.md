@@ -8,6 +8,8 @@ Time tracking site for 1MSI time records
 		- Weekly conf
 		- Entry
 	- File Preview
+		- Mapping table
+		- Weekly final entry spreadsheet
 	- Configuration
 
 - Daily conf
@@ -43,4 +45,23 @@ Time tracking site for 1MSI time records
 	- Daily file location
 	- Weekly file location
 	- Mapping file location
+	- Clear all daily files
+	- Clear all weekly files
 	- Add mapping record (Client&Project and job)
+		- Client&Project Description/Number
+		- Type Description/Number
+
+## How it works
+- Daily conf
+	- One CSV file will be created for each 'Work Date'
+	- Once 'Save' button is clicked, all records will be exported (overwrite) to this daily CSV file
+	- Empty records will be recorded too, but they will be eliminated when converting to weekly file
+- Auto-fill untracked time
+	- One entry will be added to existing ones (empty and non-empty)
+- Weekly conf
+	- Row bind all daily files
+	- Delete empty records (no account number)
+	- Convert to final format
+	- Save and generate preview
+- Add mapping record
+	- Append the record to existing mapping files
