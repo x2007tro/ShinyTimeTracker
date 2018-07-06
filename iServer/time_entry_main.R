@@ -82,6 +82,20 @@ observe(
 )
 
 ##
+# End time field
+observe(
+  lapply(1:input$dlyconf_ntr, function(i){
+    observeEvent(input[[paste0("tr_endt", i)]], {
+      ##
+      # Entry duration
+      updateTextInput(session = session, inputId = paste0("tr_durt", i), 
+                      value = CalcDuration(input[[paste0("tr_begt", i)]], input[[paste0("tr_endt", i)]]))
+      
+    })
+  })
+)
+
+##
 # Save records
 observe(
   lapply(1:input$dlyconf_ntr, function(i){
@@ -135,7 +149,7 @@ observe(
       ##
       # save to CSV file
       if(file.exists(fp)) file.remove(fp)
-      write.csv(res_df, file = fp, append = FALSE, row.names = FALSE, col.names = TRUE)
+      write.csv(res_df, file = fp, row.names = FALSE)
       
       ##
       # output message
