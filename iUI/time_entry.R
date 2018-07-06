@@ -1,5 +1,5 @@
 ##
-# Data upload tabPanel
+# Time entry tabPanel
 ##
 tp_time_entry <- tabPanel(
   "Time Entry",
@@ -44,8 +44,8 @@ tp_time_entry <- tabPanel(
               
               ##
               # Real content starts here
-              tags$div(class = "wlyconf_div", actionButton("wlyconf_make", "Make Final Entry File", width = entry_wid_l)),
-              tags$div(class = "wlyconf_div", actionButton("wlyconf_email", "Email Final Entry File", width = entry_wid_l))
+              tags$div(class = "wlyconf_div", actionButton("wlyconf_make", "Make Final Entry File", width = entry_wid_l))
+              #tags$div(class = "wlyconf_div", actionButton("wlyconf_email", "Email Final Entry File", width = entry_wid_l))
             )
           )
         )
