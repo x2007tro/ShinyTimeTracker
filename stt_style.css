@@ -22,8 +22,8 @@ body {
 .block_title {
   color:white;
   font-weight:bold;
-  padding:3px 0;
-  background-color:gray;
+  padding:5px 0;
+  background-color:rgba(35,43,43,1);
 }
 
 /*
@@ -38,4 +38,11 @@ body {
 .gloconf_div {
   margin:3px;
   padding:2px;
+}
+
+/*
+ * Action button style
+ */
+.btn-primary {
+  margin-top:20px;
 }

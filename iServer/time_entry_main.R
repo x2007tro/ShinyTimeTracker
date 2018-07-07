@@ -17,7 +17,7 @@ output$time_entry_block <- renderUI({
       ini_begt <- ""
       ini_endt <- ""
       ini_durt <- 0
-      ini_nar <- ""
+      ini_nar <- "Enter comments"
     } else {
       ini_cp <- ini_recs[i, "ClientProject"]
       ini_job <- ini_recs[i, "Job"]
@@ -31,37 +31,41 @@ output$time_entry_block <- renderUI({
       column(
         width = 12,
         
-        ##
-        # Meat here
-        
-        # id
-        tags$div(class = "tr_div", textInput(paste0("tr_id", i), "ID", value = i, width = entry_wid_s)), 
-        
-        # Client and project
-        tags$div(class = "tr_div", selectInput(paste0("tr_cp", i), "Client & Project",
-                                               choices = ref()$cf_client_proj$ClientProject, selected = ini_cp,
-                                               multiple = FALSE, selectize = TRUE, width = entry_wid_l)),
-        # Job
-        tags$div(class = "tr_div", selectInput(paste0("tr_job", i), "Job",
-                                               choices = ref()$cf_job$Job, selected = ini_job,
-                                               multiple = FALSE, selectize = TRUE, width = entry_wid_m)),
-        
-        # Time handling
-        tags$div(class = "tr_div", textInput(paste0("tr_begt", i), "Begin", value = ini_begt, width = entry_wid_s)),   # button controlled
-        tags$div(class = "tr_div", textInput(paste0("tr_endt", i), "End", value = ini_endt, width = entry_wid_s)),   # button controlled
-        tags$div(class = "tr_div", textInput(paste0("tr_durt", i), "Duration", value = ini_durt, width = entry_wid_s)),   # auto calc
-        
-        # Narrivate
-        tags$div(class = "tr_div", textInput(paste0("tr_nar", i), "Narrative", value = "comments", width = entry_wid_l)),
-        
-        # Action buttons
-        tags$div(class = "tr_div", actionButton(paste0("tr_begb", i), "Begin", width = entry_wid_s)),
-        tags$div(class = "tr_div", actionButton(paste0("tr_endb", i), "End", width = entry_wid_s)),
-        tags$div(class = "tr_div", actionButton(paste0("tr_save", i), "Save", width = entry_wid_s)),
-        
-        # Message for saving action
-        tags$div(class = "tr_div", textOutput(paste0("tr_msg", i)))
+        tags$div(
+          style = "border-bottom:1px solid gray;",
+          ##
+          # Meat here
+          
+          # id
+          tags$div(class = "tr_div", textInput(paste0("tr_id", i), "ID", value = i, width = entry_wid_s)), 
+          
+          # Client and project
+          tags$div(class = "tr_div", selectInput(paste0("tr_cp", i), "Client & Project",
+                                                 choices = ref()$cf_client_proj$ClientProject, selected = ini_cp,
+                                                 multiple = FALSE, selectize = TRUE, width = entry_wid_l)),
+          # Job
+          tags$div(class = "tr_div", selectInput(paste0("tr_job", i), "Job",
+                                                 choices = ref()$cf_job$Job, selected = ini_job,
+                                                 multiple = FALSE, selectize = TRUE, width = entry_wid_m)),
+          
+          # Time handling
+          tags$div(class = "tr_div", textInput(paste0("tr_begt", i), "Begin", value = ini_begt, width = entry_wid_s)),   # button controlled
+          tags$div(class = "tr_div", textInput(paste0("tr_endt", i), "End", value = ini_endt, width = entry_wid_s)),   # button controlled
+          tags$div(class = "tr_div", textInput(paste0("tr_durt", i), "Duration", value = ini_durt, width = entry_wid_s)),   # auto calc
+          
+          # Narrivate
+          tags$div(class = "tr_div", textInput(paste0("tr_nar", i), "Narrative", value = ini_nar, width = entry_wid_l)),
+          
+          # Action buttons
+          tags$div(class = "tr_div", actionButton(class = "btn-primary", paste0("tr_begb", i), "Begin", width = entry_wid_s)),
+          tags$div(class = "tr_div", actionButton(class = "btn-primary", paste0("tr_endb", i), "End", width = entry_wid_s)),
+          tags$div(class = "tr_div", actionButton(class = "btn-primary", paste0("tr_save", i), "Save", width = entry_wid_s)),
+          
+          # Message for saving action
+          tags$div(class = "tr_div", textOutput(paste0("tr_msg", i)))
+        )
       )
+      
     )
     
   })
