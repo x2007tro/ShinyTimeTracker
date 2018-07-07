@@ -24,7 +24,7 @@ tp_time_entry <- tabPanel(
               ##
               # Real content starts here
               tags$div(class = "dlyconf_div", dateInput("dlyconf_wd", "Work Date", value = format(Sys.Date(), "%Y-%m-%d"), 
-                                                        format = "yyyy-mm-dd"), width = entry_wid_s),
+                                                        format = "yyyy-mm-dd", width = entry_wid_m)),
               tags$div(class = "dlyconf_div", numericInput("dlyconf_ntr", "Time Entry Slots", value = ini_num_time_entry, width = entry_wid_m)),
               tags$div(class = "dlyconf_div", actionButton("dlyconf_af", "Auto-fill Untracked Time", width = entry_wid_l)),
               tags$div(class = "dlyconf_div", actionButton("dlyconf_reset", "Reset All Time Entries", width = entry_wid_l))
@@ -44,7 +44,8 @@ tp_time_entry <- tabPanel(
               
               ##
               # Real content starts here
-              tags$div(class = "wlyconf_div", actionButton("wlyconf_make", "Make Final Entry File", width = entry_wid_l))
+              tags$div(class = "wlyconf_div", actionButton("wlyconf_make", "Make Final Entry File", width = entry_wid_l)),
+              tags$div(class = "wlyconf_div", textOutput("wlyconf_msg"))
               #tags$div(class = "wlyconf_div", actionButton("wlyconf_email", "Email Final Entry File", width = entry_wid_l))
             )
           )

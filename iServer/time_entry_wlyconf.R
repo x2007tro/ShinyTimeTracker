@@ -66,6 +66,9 @@ observeEvent(input$wlyconf_make, {
     fp <- paste0(input$gloconf_wfl, "time_records", ".csv")
     if(file.exists(fp)) file.remove(fp)
     write.csv(recs_fnl, file = fp, append = FALSE, row.names = FALSE, col.names = TRUE)
+    
+    if(file.exists(fp)) msg <- "Weekly file saved!" else msg <- "Weekly file not saved!"
+    output$wlyconf_msg <- renderText({ msg })
   }
   
 })

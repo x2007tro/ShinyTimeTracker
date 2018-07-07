@@ -47,9 +47,19 @@ ref <- reactive({
     )
   })
   
+  ##
+  # Read existing daily entry file
+  fp <- paste0(input$gloconf_dfl, "time_records_", format(input$dlyconf_wd, "%Y%m%d"), ".csv")
+  if(file.exists(fp)){
+    ex_recs <- read.csv(fp, header = TRUE, stringsAsFactors = FALSE)
+  } else {
+    ex_recs <- data.frame(f1 = as.character(0), stringsAsFactors = FALSE)
+  }
+  
   res <- list(
     cf_client_proj = cpdf,
-    cf_job = jobdf
+    cf_job = jobdf,
+    recs = ex_recs
   )
   
   return(res)

@@ -8,6 +8,25 @@ output$time_entry_block <- renderUI({
   
   lapply(1:input$dlyconf_ntr, function(i){
     
+    ##
+    # load exising values
+    ini_recs <- ref()$recs
+    if(i > nrow(ini_recs)){
+      ini_cp <- ref()$cf_client_proj$ClientProject[1]
+      ini_job <- ref()$cf_job$Job[1]
+      ini_begt <- ""
+      ini_endt <- ""
+      ini_durt <- 0
+      ini_nar <- ""
+    } else {
+      ini_cp <- ini_recs[i, "ClientProject"]
+      ini_job <- ini_recs[i, "Job"]
+      ini_begt <- ini_recs[i, "Begin"]
+      ini_endt <- ini_recs[i, "End"]
+      ini_durt <- ini_recs[i, "Duration"]
+      ini_nar <- ini_recs[i, "Narrative"]
+    }
+    
     fluidRow(
       column(
         width = 12,
@@ -20,17 +39,17 @@ output$time_entry_block <- renderUI({
         
         # Client and project
         tags$div(class = "tr_div", selectInput(paste0("tr_cp", i), "Client & Project",
-                                               choices = ref()$cf_client_proj$ClientProject,
+                                               choices = ref()$cf_client_proj$ClientProject, selected = ini_cp,
                                                multiple = FALSE, selectize = TRUE, width = entry_wid_l)),
         # Job
         tags$div(class = "tr_div", selectInput(paste0("tr_job", i), "Job",
-                                               choices = ref()$cf_job$Job,
+                                               choices = ref()$cf_job$Job, selected = ini_job,
                                                multiple = FALSE, selectize = TRUE, width = entry_wid_m)),
         
         # Time handling
-        tags$div(class = "tr_div", textInput(paste0("tr_begt", i), "Begin", width = entry_wid_s)),   # button controlled
-        tags$div(class = "tr_div", textInput(paste0("tr_endt", i), "End", width = entry_wid_s)),   # button controlled
-        tags$div(class = "tr_div", textInput(paste0("tr_durt", i), "Duration", value = 0, width = entry_wid_s)),   # auto calc
+        tags$div(class = "tr_div", textInput(paste0("tr_begt", i), "Begin", value = ini_begt, width = entry_wid_s)),   # button controlled
+        tags$div(class = "tr_div", textInput(paste0("tr_endt", i), "End", value = ini_endt, width = entry_wid_s)),   # button controlled
+        tags$div(class = "tr_div", textInput(paste0("tr_durt", i), "Duration", value = ini_durt, width = entry_wid_s)),   # auto calc
         
         # Narrivate
         tags$div(class = "tr_div", textInput(paste0("tr_nar", i), "Narrative", value = "comments", width = entry_wid_l)),
@@ -41,13 +60,15 @@ output$time_entry_block <- renderUI({
         tags$div(class = "tr_div", actionButton(paste0("tr_save", i), "Save", width = entry_wid_s)),
         
         # Message for saving action
-        tags$div(class = "tr_div", textInput(paste0("tr_msg", i), "Message", width = entry_wid_l))
+        tags$div(class = "tr_div", textOutput(paste0("tr_msg", i)))
       )
     )
     
   })
   
 })
+
+
 
 ##
 # Begin action button
@@ -68,7 +89,7 @@ observe(
   lapply(1:input$dlyconf_ntr, function(i){
     observeEvent(input[[paste0("tr_endb", i)]], {
       ##
-      # Entry current time into 'begin' box
+      # Entry current time into 'end' box
       updateTextInput(session = session, inputId = paste0("tr_endt", i), 
                       value = format(Sys.time(), "%H:%M"))
       
@@ -120,12 +141,29 @@ observe(
       ##
       # loop through all records and add data to data frame
       for(j in 1:input$dlyconf_ntr){
+        
+        if(input[[paste0("tr_begt", j)]] != "" & input[[paste0("tr_endt", j)]] == ""){
+          ##
+          # Entry current time into 'end' box
+          updateTextInput(session = session, inputId = paste0("tr_endt", j), 
+                          value = format(Sys.time(), "%H:%M"))
+          
+          ##
+          # Entry duration
+          updateTextInput(session = session, inputId = paste0("tr_durt", j), 
+                          value = CalcDuration(input[[paste0("tr_begt", j)]], input[[paste0("tr_endt", j)]]))
+        }
         res_df[j, "WorkDate"] <- format(input$dlyconf_wd, "%m/%d/%Y")
         res_df[j, "ClientProject"] <- input[[paste0("tr_cp", j)]]
         res_df[j, "Job"] <- input[[paste0("tr_job", j)]]
         res_df[j, "Begin"] <- input[[paste0("tr_begt", j)]]
-        res_df[j, "End"] <- input[[paste0("tr_endt", j)]]
-        res_df[j, "Duration"] <- input[[paste0("tr_durt", j)]]
+        if(input[[paste0("tr_begt", j)]] != "" & input[[paste0("tr_endt", j)]] == ""){
+          res_df[j, "End"] <- format(Sys.time(), "%H:%M")
+          res_df[j, "Duration"] <- CalcDuration(input[[paste0("tr_begt", j)]], format(Sys.time(), "%H:%M"))
+        } else {
+          res_df[j, "End"] <- input[[paste0("tr_endt", j)]]
+          res_df[j, "Duration"] <- input[[paste0("tr_durt", j)]]
+        }
         res_df[j, "Narrative"] <- input[[paste0("tr_nar", j)]]
       }
       
@@ -154,7 +192,7 @@ observe(
       ##
       # output message
       if(file.exists(fp)) msg <- "File saved!" else msg <- "File not saved!"
-      updateTextInput(session = session, inputId = paste0("tr_msg", i), value = msg)
+      output[[paste0("tr_msg", i)]] <- renderText({ msg })
       
     })
   })

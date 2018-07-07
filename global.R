@@ -18,8 +18,8 @@ wkly_req_fields <- c("PayType", "PayTypeDesc", "Duration", "WorkDate", "AccountN
 ##
 # Configuration parameter
 ##
-dly_file_loc <- "input/daily/"
+dly_file_loc <- "output/daily/"
 dly_arc_file_loc <- paste0(dly_file_loc, "archive/")
-wly_file_loc <- "input/weekly/"
+wly_file_loc <- "output/weekly/"
 wly_arc_file_loc <- paste0(wly_file_loc, "archive/")
 cf_file_path <- "input/ref/cross_reference.xlsx"
