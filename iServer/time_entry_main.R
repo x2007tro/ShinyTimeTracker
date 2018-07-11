@@ -11,6 +11,8 @@ output$time_entry_block <- renderUI({
     ##
     # load exising values
     ini_recs <- ref()$recs
+    str(ini_recs)
+    print(nrow(ini_recs))
     if(i > nrow(ini_recs)){
       ini_cp <- ref()$cf_client_proj$ClientProject[1]
       ini_job <- ref()$cf_job$Job[1]

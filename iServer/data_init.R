@@ -53,7 +53,7 @@ ref <- reactive({
   if(file.exists(fp)){
     ex_recs <- read.csv(fp, header = TRUE, stringsAsFactors = FALSE)
   } else {
-    ex_recs <- data.frame(f1 = as.character(0), stringsAsFactors = FALSE)
+    ex_recs <- data.frame(f1 = as.numeric(), stringsAsFactors = FALSE)
   }
   
   res <- list(

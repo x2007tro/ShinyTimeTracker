@@ -1,17 +1,12 @@
 ##
 # Weekly Conf functions
 ##
-
-##
-# make weekly file
-##
-observeEvent(input$wlyconf_make, {
-  
+fnl_recs <- reactive({
   ##
   # Collect all daily files
   afs <- list.files(path = input$gloconf_dfl, pattern = "*.csv")
   if(length(afs) == 0){
-    res <- data.frame(f1 = as.character(0))
+    recs_fnl <- data.frame(f1 = as.numeric())
   } else {
     afs_content <- lapply(1:length(afs), function(i){
       dataset <- read.csv(paste0(input$gloconf_dfl, afs[i]), header = TRUE, stringsAsFactors = FALSE)
@@ -31,9 +26,9 @@ observeEvent(input$wlyconf_make, {
     # Calculate account number
     recs2$AccountNumber <- ""
     recs2[recs2$ClientProjectNumber != "00000000", "AccountNumber"] <- paste(recs2[recs2$ClientProjectNumber != "00000000", "ClientProjectNumber"], 
-                                                                              an_mid, 
-                                                                              recs2[recs2$ClientProjectNumber != "00000000", "JobNumber"], 
-                                                                              sep = ".")
+                                                                             an_mid, 
+                                                                             recs2[recs2$ClientProjectNumber != "00000000", "JobNumber"], 
+                                                                             sep = ".")
     
     ##
     # Filter pay type
@@ -43,39 +38,55 @@ observeEvent(input$wlyconf_make, {
     ##
     # Select required fields
     recs_fnl <- recs2[,wkly_req_fields]
-    
-    ##
-    # display to file preview
-    output$dto_wlyf <- DT::renderDataTable({
-      DT::datatable(
-        recs_fnl, 
-        options = list(
-          pageLength = 10,
-          orderClasses = TRUE,
-          searching = TRUE,
-          paging = TRUE,
-          scrollX = 400,
-          scrollY = 400,
-          scrollCollapse = TRUE),
-        rownames = TRUE
-      )
-    })
-    
-    ##
-    # save
-    fp <- paste0(input$gloconf_wfl, "time_records", ".csv")
-    if(file.exists(fp)) file.remove(fp)
-    write.csv(recs_fnl, file = fp, append = FALSE, row.names = FALSE, col.names = TRUE)
-    
-    if(file.exists(fp)) msg <- "Weekly file saved!" else msg <- "Weekly file not saved!"
-    output$wlyconf_msg <- renderText({ msg })
   }
   
+  return(recs_fnl)
+})
+
+
+##
+# make weekly file
+##
+observeEvent(input$wlyconf_make, {
+  
+  dataset <- fnl_recs()
+  
+  ##
+  # display to file preview
+  output$dto_wlyf <- DT::renderDataTable({
+    DT::datatable(
+      dataset, 
+      options = list(
+        pageLength = 10,
+        orderClasses = TRUE,
+        searching = TRUE,
+        paging = TRUE,
+        scrollX = 400,
+        scrollY = 400,
+        scrollCollapse = TRUE),
+      rownames = TRUE
+    )
+  })
+  
+  ##
+  # save
+  fp <- paste0(input$gloconf_wfl, "time_records", ".csv")
+  if(file.exists(fp)) file.remove(fp)
+  write.csv(dataset, file = fp, append = FALSE, row.names = FALSE, col.names = TRUE)
+  
+  if(file.exists(fp)) msg <- "Weekly file saved!" else msg <- "Weekly file not saved!"
+  output$wlyconf_msg <- renderText({ msg })
 })
 
 ##
-# Email weekly file
+# Download weekly file
 ##
-# observeEvent(input$wlyconf_email, {
-#   
-# })
+output$wlyconf_download <- downloadHandler(
+  filename = function() {
+    paste0("Import1msi_", format(Sys.Date(), "%Y%m%d"), ".csv")
+  },
+  content = function(file) {
+    dataset <- fnl_recs()
+    write.csv(dataset, file, row.names = FALSE)
+  }
+)
