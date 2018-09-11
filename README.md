@@ -65,3 +65,7 @@ Time tracking site for 1MSI time records
 	- Save and generate preview
 - Add mapping record
 	- Append the record to existing mapping files
+	
+## Required Packages
+- require(readxl)
+- require(DT)
