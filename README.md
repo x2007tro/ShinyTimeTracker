@@ -67,5 +67,7 @@ Time tracking site for 1MSI time records
 	- Append the record to existing mapping files
 	
 ## Required Packages
+- require(shiny)
+- require(shinythemes)
 - require(readxl)
 - require(DT)
