@@ -71,3 +71,34 @@ observeEvent(input$gloconf_clrw, {
     msg
   })
 })
+
+##
+# File download and upload
+##
+observe({
+  
+  req(input$file_u)
+  file.copy(input$file_u$datapath, input$gloconf_ref, overwrite = TRUE)
+  updateTextInput(session, "gloconf_ref", value = input$gloconf_ref) # this will trigger client/job list reloading
+  
+})
+
+##
+# This handles template download
+output$file_d <- downloadHandler(
+  
+  # This function returns a string which tells the client
+  # browser what name to use when saving the file.
+  filename = function() {
+    paste0("new_cross_reference", ".xlsx")
+  },
+  
+  content = function(file) {
+    ##
+    # Extract file from directory
+    ##
+    file.copy(input$gloconf_ref, file)
+  }
+)
+
+
